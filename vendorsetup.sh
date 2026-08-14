@@ -40,7 +40,7 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
  	
  	#OFR build settings & info
  	# FOX_VANILLA_BUILD sengaja TIDAK di-hardcode di sini -- workflow CI yang menentukan
- 	# ini secara eksplisit per FOX_VARIANT (HyperOS/GKI), supaya tidak ketiban aturan lokal ini.
+ 	# ini secara eksplisit (hardcode FOX_VARIANT=HyperOS, fox_12.1 saja), supaya tidak ketiban aturan lokal ini.
 	export FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER=1
 	export TARGET_DEVICE_ALT="ingres"
 	export FOX_RECOVERY_SYSTEM_PARTITION="/dev/block/mapper/system"
@@ -66,8 +66,8 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
     # Maintainer (fallback build lokal -- workflow CI selalu override ini)
    	export OF_MAINTAINER=D2N
 
-	# lunch dipanggil eksplisit oleh workflow CI (branch-aware: 2-part utk fox_12.1, 3-part utk fox_14.1),
-	# jadi TIDAK di-auto-lunch di sini lagi -- itu bisa tumpang tindih / salah sintaks kalau MANIFEST_BRANCH=14.1.
+	# lunch dipanggil eksplisit oleh workflow CI (fox_12.1, sintaks lunch 2-part, hardcode),
+	# jadi TIDAK di-auto-lunch di sini lagi -- itu bisa tumpang tindih dgn yang workflow lakukan sendiri.
 	# Untuk build manual/lokal, jalankan lunch secara eksplisit sendiri setelah source file ini.
 	# let's see what are our build VARs
 	if [ -n "$FOX_BUILD_LOG_FILE" -a -f "$FOX_BUILD_LOG_FILE" ]; then
