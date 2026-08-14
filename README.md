@@ -1,5 +1,11 @@
 # TWRP device tree for Redmi K50 Gaming / Poco F4 GT
 
+> **Catatan:** branch/repo ini bernama "TWRP" dan memakai konvensi penamaan produk `twrp_ingres`
+> (standar bersama semua tree turunan TWRP), tapi tree ini di-build sebagai **OrangeFox** — lihat
+> `fox_ingres.mk` untuk pengaturan khusus OrangeFox-nya, dan `vendorsetup.sh` untuk variabel
+> `FOX_*`/`OF_*`-nya. Nama "TWRP" di sini murni penamaan branch, bukan penanda jenis recovery yang
+> dihasilkan.
+
 The POCO F4 GT (codenamed _"ingres"_) is a high-end gaming smartphone from POCO.
 
 It was globally released in late April 2022.
