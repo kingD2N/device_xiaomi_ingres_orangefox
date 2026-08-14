@@ -181,14 +181,11 @@ TW_DEVICE_VERSION := POCO F4 GT
 
 # Load kernel modules for touch & vibrator
 BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules.load.recovery))
-# TW_LOAD_VENDOR_MODULES SENGAJA DIHAPUS (keputusan sadar-risiko, atas permintaan eksplisit):
-# OrangeFox otomatis memicu dialog "Hardware GUI control" di device manapun yang mendeklarasikan
-# variable ini, kalau saat pengecekan belum ada satu pun modul yang berhasil dimuat (kemungkinan
-# race condition -- touch sendiri terkonfirmasi jalan setelah masuk recovery). Menghapus variable
-# ini menghilangkan dialognya secara pasti, TAPI ini juga variable yang sama yang memuat driver
-# kernel untuk touch & vibrator di atas (adsp_loader_dlkm.ko, focaltech_fts.ko, fts_touch_spi.ko,
-# dkk) -- kalau modul itu tidak ke-load lewat jalur lain, touch/vibrator kemungkinan besar mati.
-# WAJIB dites ulang setelah build+flash: apakah touch masih responsif tanpa baris ini.
+TW_LOAD_VENDOR_MODULES := "adsp_loader_dlkm.ko atmel_mxt_ts.ko focaltech_fts.ko fts_touch_spi.ko nt36xxx-i2c.ko nt36xxx-spi.ko synaptics_dsx.ko xiaomi_touch.ko"
+# TW_LOAD_VENDOR_MODULES_EXCLUDE_GKI SENGAJA DIHAPUS (pernah ditambahkan, lalu di-revert):
+# BOARD_USES_GENERIC_KERNEL_IMAGE permanen true di device tree ini (build-time, bukan per-boot),
+# jadi flag itu mematikan TW_LOAD_VENDOR_MODULES di ATAS -- termasuk semua driver touchscreen --
+# di semua build, bukan cuma skenario GKI+12.1 yang dimaksud. Ini penyebab touch tidak responsif.
 
 # The path to a temperature sensor
 TW_CUSTOM_CPU_TEMP_PATH := "/sys/devices/virtual/thermal/thermal_zone50/temp"
