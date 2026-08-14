@@ -1,5 +1,11 @@
+#
+# Copyright (C) 2022 The Android Open Source Project
+#
+# SPDX-License-Identifier: Apache-2.0
+#
 
 DEVICE_PATH := device/xiaomi/ingres
+
 BOARD_SYSTEMSDK_VERSIONS := 31
 
 # Architecture
@@ -61,7 +67,11 @@ BUILD_BROKEN_USES_BUILD_HOST_SHARED_LIBRARY := true
 BUILD_BROKEN_USES_BUILD_HOST_STATIC_LIBRARY := true
 BUILD_BROKEN_USES_BUILD_HOST_EXECUTABLE := true
 BUILD_BROKEN_USES_BUILD_COPY_HEADERS := true
+
+# Crypto
 TW_INCLUDE_CRYPTO := true
+TW_INCLUDE_CRYPTO_FBE := true
+TW_INCLUDE_FBE_METADATA_DECRYPT := true
 BOARD_USES_QCOM_FBE_DECRYPTION := true
 BOARD_USES_METADATA_PARTITION := true
 PLATFORM_VERSION := 99.87.36
@@ -78,9 +88,10 @@ BOARD_USES_VENDOR_DLKMIMAGE := true
 BOARD_BOOT_HEADER_VERSION := 4
 BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOT_HEADER_VERSION)
 BOARD_USES_GENERIC_KERNEL_IMAGE := true
+
 TARGET_COMPILE_WITH_MSM_KERNEL := false
-BOARD_KERNEL_IMAGE_NAME := Image
 BOARD_EXCLUDE_KERNEL_FROM_RECOVERY_IMAGE := true
+BOARD_KERNEL_IMAGE_NAME := Image
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/kernel
 
 BOARD_KERNEL_BASE        := 0x00000000
@@ -89,8 +100,7 @@ BOARD_KERNEL_TAGS_OFFSET := 0x01E00000
 BOARD_RAMDISK_OFFSET     := 0x02000000
 
 BOARD_KERNEL_CMDLINE := video=vfb:640x400,bpp=32,memsize=3072000
-BOARD_KERNEL_CMDLINE += console=ttyMSM0,115200n8 console=tty0 earlycon msm_geni_serial.con_enabled=1 androidboot.selinux=permissive
-BOARD_KERNEL_CMDLINE += printk.devkmsg=on ignore_loglevel earlyprintk=fb
+BOARD_KERNEL_CMDLINE += console=ttyMSM0,115200n8 earlycon msm_geni_serial.con_enabled=1 androidboot.selinux=permissive
 BOARD_BOOTCONFIG := androidboot.hardware=qcom androidboot.memcg=1 androidboot.usbcontroller=a600000.dwc3
 BOARD_BOOTCONFIG += androidboot.console=ttyMSM0
 
@@ -130,8 +140,13 @@ TARGET_SYSTEM_PROP += $(DEVICE_PATH)/system.prop
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
 
+# Screen density
+TARGET_SCREEN_HEIGHT  := 2400
+TARGET_SCREEN_DENSITY := 560
+TARGET_SCREEN_WIDTH   := 1080
+
 # TWRP specific build flags
-TW_THEME := portrait_hdpi
+#TW_THEME := portrait_hdpi
 RECOVERY_SDCARD_ON_DATA := true
 TARGET_RECOVERY_QCOM_RTC_FIX := true
 TW_EXCLUDE_DEFAULT_USB_INIT := true
@@ -143,29 +158,30 @@ TW_INPUT_BLACKLIST := "hbtp_vm"
 TWRP_INCLUDE_LOGCAT := true
 TARGET_USES_LOGD := true
 TW_EXCLUDE_APEX := true
-TW_INCLUDE_PYTHON := true
 TW_INCLUDE_RESETPROP := true
 TW_INCLUDE_LIBRESETPROP := true
+TW_STATUS_ICONS_ALIGN := center
+TW_CUSTOM_CPU_POS := "50"
+TW_CUSTOM_CLOCK_POS := "600"
+TW_CUSTOM_BATTERY_POS := "800"
 
 # TWRP Display flags
 TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel0-backlight/brightness"
 TW_MAX_BRIGHTNESS := 2047
 TW_DEFAULT_BRIGHTNESS := 1024
 TW_NO_SCREEN_BLANK := true
-TW_Y_OFFSET := 90
-TW_H_OFFSET := -90
-OF_STATUS_H := 56
 
 # TWRP Haptics
-#TW_SUPPORT_INPUT_AIDL_HAPTICS := true
-#TW_SUPPORT_INPUT_AIDL_HAPTICS_FQNAME := "IVibrator/vibratorfeature"
-TW_NO_HAPTICS := true
+TW_SUPPORT_INPUT_AIDL_HAPTICS := true
+TW_SUPPORT_INPUT_AIDL_HAPTICS_FQNAME := "IVibrator/vibratorfeature"
 TW_EXCLUDE_TWRPAPP := true
 
 # TWRP Version
-TW_DEVICE_VERSION := ingres v1
+TW_DEVICE_VERSION := POCO F4 GT
+
+# Load kernel modules for touch & vibrator
 BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules.load.recovery))
-TW_LOAD_VENDOR_MODULES := "xiaomi_touch.ko fts_touch_spi.ko"
+TW_LOAD_VENDOR_MODULES := "adsp_loader_dlkm.ko atmel_mxt_ts.ko focaltech_fts.ko fts_touch_spi.ko nt36xxx-i2c.ko nt36xxx-spi.ko synaptics_dsx.ko xiaomi_touch.ko"
 
 # The path to a temperature sensor
 TW_CUSTOM_CPU_TEMP_PATH := "/sys/devices/virtual/thermal/thermal_zone50/temp"

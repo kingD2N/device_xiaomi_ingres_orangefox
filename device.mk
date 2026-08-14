@@ -12,6 +12,9 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/base.mk)
 # Enable project quotas and casefolding for emulated storage without sdcardfs
 $(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
 
+# Installs gsi keys into ramdisk, to boot a GSI with verified boot.
+$(call inherit-product, $(SRC_TARGET_DIR)/product/gsi_keys.mk)
+
 # Default Android A/B configuration
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota.mk)
 
@@ -37,6 +40,7 @@ AB_OTA_POSTINSTALL_CONFIG += \
 
 # Board
 BOARD_SHIPPING_API_LEVEL := 31
+BOARD_API_LEVEL := 31
 PRODUCT_SHIPPING_API_LEVEL := 31
 SHIPPING_API_LEVEL := 31
 
