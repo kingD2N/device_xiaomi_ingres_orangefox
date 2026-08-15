@@ -142,7 +142,7 @@ TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
 
 # Screen density
 TARGET_SCREEN_HEIGHT  := 2400
-TARGET_SCREEN_DENSITY := 560
+TARGET_SCREEN_DENSITY := 640
 TARGET_SCREEN_WIDTH   := 1080
 
 # TWRP specific build flags

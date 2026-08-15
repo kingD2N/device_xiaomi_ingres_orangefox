@@ -13,16 +13,17 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/base.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
 
 # Installs gsi keys into ramdisk, to boot a GSI with verified boot.
-$(call inherit-product-if-exists, $(SRC_TARGET_DIR)/product/gsi_keys.mk)
+$(call inherit-product-if-exists, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 # PERBAIKAN Android 16 (dikonfirmasi dari build.log): build/make/target/product/gsi_keys.mk
-# sudah tidak ada di source Android 16 (kemungkinan besar di-rename upstream jadi
-# developer_gsi_keys.mk oleh Google, restrukturisasi luas per Jun 2025, bukan cuma masalah
-# device tree ini). Diubah ke inherit-product-if-exists supaya baris ini otomatis dilewati
-# kalau filenya tidak ada -- aman karena gsi_keys.mk cuma soal key GSI (Generic System
-# Image), tidak dibutuhkan untuk build recoveryimage. Semua inherit-product LAIN di file
-# ini dan di twrp_ingres.mk (base.mk, emulated_storage.mk, virtual_ab_ota.mk,
-# core_64_bit.mk, full_base_telephony.mk) sudah dicek satu-satu terhadap listing resmi
-# android.googlesource.com/platform/build dan masih ada semua -- tidak disentuh.
+# sudah di-rename upstream jadi developer_gsi_keys.mk oleh Google (restrukturisasi luas per
+# Jun 2025) -- dikonfirmasi dari DUA reference tree resmi OrangeFox (sm8450-common fox_14.1
+# maupun fox_16.0), keduanya sudah pakai nama baru ini. Diarahkan langsung ke nama baru
+# (bukan sekadar di-skip) supaya fungsinya (gsi keys di ramdisk) tetap terpasang. Tetap
+# pakai inherit-product-if-exists sebagai jaring pengaman kalau ada manifest yang belum
+# ikut berubah. Semua inherit-product LAIN di file ini dan di twrp_ingres.mk (base.mk,
+# emulated_storage.mk, virtual_ab_ota.mk, core_64_bit.mk, full_base_telephony.mk) sudah
+# dicek satu-satu terhadap listing resmi android.googlesource.com/platform/build dan masih
+# ada semua -- tidak disentuh.
 
 # Default Android A/B configuration
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota.mk)
@@ -49,7 +50,15 @@ AB_OTA_POSTINSTALL_CONFIG += \
 
 # Board
 BOARD_SHIPPING_API_LEVEL := 31
+# PERBAIKAN release-config (dikonfirmasi dari build.log fox_14.1): begitu manifest pakai
+# sistem release-config (lunch dengan "ap2a", dst -- lihat build/make/core/board_config.mk),
+# BOARD_API_LEVEL DILARANG diset manual kalau RELEASE_BOARD_API_LEVEL sudah terisi --
+# errornya persis "BOARD_API_LEVEL must not set manully". Dibungkus ifndef supaya baris ini
+# HANYA aktif di manifest lama tanpa release-config (mis. fox_12.1); di manifest baru
+# otomatis tidak aktif dan nilainya diambil alih sistem dari release config.
+ifndef RELEASE_BOARD_API_LEVEL
 BOARD_API_LEVEL := 31
+endif
 PRODUCT_SHIPPING_API_LEVEL := 31
 SHIPPING_API_LEVEL := 31
 
