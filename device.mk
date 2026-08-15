@@ -13,7 +13,16 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/base.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
 
 # Installs gsi keys into ramdisk, to boot a GSI with verified boot.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/gsi_keys.mk)
+$(call inherit-product-if-exists, $(SRC_TARGET_DIR)/product/gsi_keys.mk)
+# PERBAIKAN Android 16 (dikonfirmasi dari build.log): build/make/target/product/gsi_keys.mk
+# sudah tidak ada di source Android 16 (kemungkinan besar di-rename upstream jadi
+# developer_gsi_keys.mk oleh Google, restrukturisasi luas per Jun 2025, bukan cuma masalah
+# device tree ini). Diubah ke inherit-product-if-exists supaya baris ini otomatis dilewati
+# kalau filenya tidak ada -- aman karena gsi_keys.mk cuma soal key GSI (Generic System
+# Image), tidak dibutuhkan untuk build recoveryimage. Semua inherit-product LAIN di file
+# ini dan di twrp_ingres.mk (base.mk, emulated_storage.mk, virtual_ab_ota.mk,
+# core_64_bit.mk, full_base_telephony.mk) sudah dicek satu-satu terhadap listing resmi
+# android.googlesource.com/platform/build dan masih ada semua -- tidak disentuh.
 
 # Default Android A/B configuration
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota.mk)
