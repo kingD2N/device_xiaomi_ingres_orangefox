@@ -181,14 +181,21 @@ TW_DEVICE_VERSION := POCO F4 GT
 
 # Load kernel modules for touch & vibrator
 BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules.load.recovery))
-# TW_LOAD_VENDOR_MODULES SENGAJA DIHAPUS (keputusan sadar-risiko, atas permintaan eksplisit):
-# OrangeFox otomatis memicu dialog "Hardware GUI control" di device manapun yang mendeklarasikan
-# variable ini, kalau saat pengecekan belum ada satu pun modul yang berhasil dimuat (kemungkinan
-# race condition -- touch sendiri terkonfirmasi jalan setelah masuk recovery). Menghapus variable
-# ini menghilangkan dialognya secara pasti, TAPI ini juga variable yang sama yang memuat driver
-# kernel untuk touch & vibrator di atas (adsp_loader_dlkm.ko, focaltech_fts.ko, fts_touch_spi.ko,
-# dkk) -- kalau modul itu tidak ke-load lewat jalur lain, touch/vibrator kemungkinan besar mati.
-# WAJIB dites ulang setelah build+flash: apakah touch masih responsif tanpa baris ini.
+# TW_LOAD_VENDOR_MODULES DIKEMBALIKAN (bukan dihapus lagi) -- root cause "0 modul berhasil
+# dimuat" TERNYATA BUKAN race condition seperti dugaan awal. Dicek langsung isi fisik
+# recovery/root/vendor/lib/modules/1.1/: yang BENAR-BENAR ada di sana cuma fts_touch_spi.ko
+# dan xiaomi_touch.ko. Daftar lama berisi 7 nama modul, 5 DI ANTARANYA TIDAK PERNAH ADA
+# FILENYA (adsp_loader_dlkm.ko, atmel_mxt_ts.ko, focaltech_fts.ko, nt36xxx-i2c.ko,
+# nt36xxx-spi.ko, synaptics_dsx.ko) -- percobaan load modul yang filenya tidak ada itulah
+# yang bikin hitungan "0 berhasil" (atau menghalangi modul asli ke-load kalau nama yang
+# tidak ada itu diproses lebih dulu), BUKAN soal timing/race. Konfirmasi IC touch asli:
+# firmware di proprietary-files.txt adalah st_fts_l10.ftb / stm_fts_production_limits.csv
+# (STMicroelectronics FTS), cocok dengan fts_touch_spi.ko. Dengan daftar berisi HANYA modul
+# yang benar-benar ada ini, dialog "Hardware GUI control" seharusnya tidak muncul lagi
+# (syaratnya "0 modul berhasil" tidak lagi terpenuhi) DAN touch benar-benar termuat --
+# bukan cuma dialognya yang hilang seperti pendekatan sebelumnya. TETAP WAJIB dites ulang
+# setelah build+flash untuk konfirmasi akhir.
+TW_LOAD_VENDOR_MODULES := "fts_touch_spi.ko xiaomi_touch.ko"
 
 # The path to a temperature sensor
 TW_CUSTOM_CPU_TEMP_PATH := "/sys/devices/virtual/thermal/thermal_zone50/temp"
