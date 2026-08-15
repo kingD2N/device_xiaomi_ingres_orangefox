@@ -172,8 +172,15 @@ TW_DEFAULT_BRIGHTNESS := 1024
 TW_NO_SCREEN_BLANK := true
 
 # TWRP Haptics
-TW_SUPPORT_INPUT_AIDL_HAPTICS := true
-TW_SUPPORT_INPUT_AIDL_HAPTICS_FQNAME := "IVibrator/vibratorfeature"
+# Vibrator/haptics DIMATIKAN atas permintaan eksplisit. TW_SUPPORT_INPUT_AIDL_HAPTICS
+# dikomentari (sisi TWRP app tidak lagi mencoba bind ke HAL vibrator "IVibrator/vibratorfeature"),
+# TW_NO_HAPTICS diaktifkan sebagai penonaktif eksplisit. File firmware (aw8697_haptic.bin,
+# aw8697_haptic_nv.bin) SENGAJA TIDAK dihapus -- kernel driver memuatnya sendiri lewat
+# request_firmware() secara independen, menghapusnya cuma memicu probe error yang tidak
+# terkait, tidak benar-benar mematikan apa pun.
+#TW_SUPPORT_INPUT_AIDL_HAPTICS := true
+#TW_SUPPORT_INPUT_AIDL_HAPTICS_FQNAME := "IVibrator/vibratorfeature"
+TW_NO_HAPTICS := true
 TW_EXCLUDE_TWRPAPP := true
 
 # TWRP Version
