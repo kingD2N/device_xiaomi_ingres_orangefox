@@ -26,7 +26,17 @@ OF_ALLOW_DISABLE_NAVBAR := 0
 OF_QUICK_BACKUP_LIST := /data;/boot;
 OF_SKIP_MULTIUSER_FOLDERS_BACKUP := 1
 OF_ENABLE_USB_STORAGE := 1
-OF_IGNORE_LOGICAL_MOUNT_ERRORS := 1
+# EKSPERIMEN (belum pasti, perlu dites): dinonaktifkan sementara untuk didiagnosis.
+# Namanya cocok secara semantik dengan gejala "Error applying update: 7
+# (kInstallDeviceOpenError)" yang cuma terjadi di OrangeFox, TIDAK di TWRP dari device yang
+# sama (dikonfirmasi lewat pengujian langsung) -- variabel ini ada di fox_ingres.mk, file
+# yang memang TWRP tidak punya. "Ignore logical mount errors" berarti OrangeFox akan
+# mengabaikan/melanjutkan begitu saja saat gagal mount partisi logical/dynamic -- persis
+# jenis partisi yang gagal dibuka updater saat flash A/B ke slot tidak aktif. BELUM 100%
+# pasti ini akar masalahnya (OrangeFox itu fork C++ yang cukup dalam dari TWRP, bukan cuma
+# beda config, jadi ada kemungkinan penyebabnya di source yang tidak bisa saya lihat) --
+# kalau setelah rebuild+flash masalahnya masih sama, baris ini aman dikembalikan aktif lagi.
+#OF_IGNORE_LOGICAL_MOUNT_ERRORS := 1
 
 #OFR settings
 OF_OPTIONS_LIST_NUM := 9
