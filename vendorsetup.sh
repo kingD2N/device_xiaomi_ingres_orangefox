@@ -48,6 +48,13 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 	export FOX_DELETE_INITD_ADDON=1
 	export FOX_SETTINGS_ROOT_DIRECTORY="/persist/OFRP"
 
+	#OFR display
+	# OF_SCREEN_H: layar ingres 1080x2400 = rasio ~20:9, BUKAN 16:9 default OrangeFox (1920).
+	# Rumus resmi (orangefox_build_vars.txt): <rasio_tinggi_basis_9>*120 -> 20*120 = 2400.
+	# WAJIB di sini (vendorsetup.sh/script), BUKAN di BoardConfig.mk/.mk mana pun -- dikonfirmasi
+	# dari wiki resmi OrangeFox: variabel OF_/FOX_ tidak diproses sama sekali kalau ditaruh di file .mk.
+	export OF_SCREEN_H=2400
+
 	#OFR binary files
 	export FOX_REPLACE_BUSYBOX_PS=1
 	export FOX_USE_BASH_SHELL=1
