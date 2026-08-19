@@ -28,6 +28,21 @@ $(call inherit-product-if-exists, $(SRC_TARGET_DIR)/product/developer_gsi_keys.m
 # Default Android A/B configuration
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota.mk)
 
+# virtual_ab_ota.mk (di atas) cuma set property/flag Virtual A/B -- TIDAK menyertakan paket
+# snapuserd itu sendiri. Tanpa daemon ini, update_engine tidak bisa membuat/membuka device
+# COW-snapshot utk slot tidak aktif saat flashing ROM A/B -- persis error yang dilaporkan:
+# "Error applying update: 7 (ErrorCode::kInstallDeviceOpenError)" saat mengeflash ke slot B.
+# Dikonfirmasi lewat dokumentasi resmi AOSP (source.android.com/docs/core/ota/virtual_ab/
+# implement + platform/build virtual_ab_ota/android_t_baseline.mk upstream) -- baseline itu
+# sendiri yg menyertakan "PRODUCT_PACKAGES += snapuserd snapuserd.recovery", TIDAK di-inherit
+# otomatis oleh virtual_ab_ota.mk polos. "snapuserd.recovery" adalah varian khusus utk
+# lingkungan recovery/ramdisk (terpisah dari "snapuserd" biasa utk system boot normal) --
+# device tree ini sebelumnya tidak punya satupun. Belum dikonfirmasi lewat build+flash asli,
+# tapi cocok persis dgn gejala dan error code yg dilaporkan -- coba build ulang, kabari hasilnya.
+PRODUCT_PACKAGES += \
+    snapuserd \
+    snapuserd.recovery
+
 # A/B related packages
 ENABLE_AB := true
 ENABLE_VIRTUAL_AB := true
